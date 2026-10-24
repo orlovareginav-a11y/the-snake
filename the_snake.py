@@ -49,13 +49,13 @@ class GameObject:
     Содержит общие свойства, такие как позиция и цвет.
     """
 
-    def __init__(self, body_color):
+    def __init__(self):
         """
         Инициализирует базовые параметры игрового объекта -
         начальная позиция и цвет объекта.
         """
         self.position = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        self.body_color = body_color
+        self.body_color = BOARD_BACKGROUND_COLOR
 
     def draw(self):
         """Метод для отрисовки объекта на экране."""
@@ -76,7 +76,7 @@ class Apple(GameObject):
         Инициализирует хорошее яблоко,
         задает цвет и случайную начальную позицию.
         """
-        super().__init__(APPLE_COLOR)
+        super().__init__()
         self.body_color = APPLE_COLOR
         self.randomize_position()
 
@@ -112,7 +112,7 @@ class BadApple(GameObject):
         Инициализирует плохое яблоко,
         задает цвет и случайную начальную позицию.
         """
-        super().__init__(BAD_APPLE_COLOR)
+        super().__init__()
         self.body_color = BAD_APPLE_COLOR
         self.randomize_position()
 
@@ -145,7 +145,7 @@ class Snake(GameObject):
 
     def __init__(self):
         """Инициализирует начальное состояние змейки."""
-        super().__init__(SNAKE_COLOR)
+        super().__init__()
         self.body_color = SNAKE_COLOR
         self.length = 1
         self.positions = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]

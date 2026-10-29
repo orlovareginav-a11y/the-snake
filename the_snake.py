@@ -87,11 +87,9 @@ class Apple(GameObject):
         if forbidden_positions is None:
             forbidden_positions = []
 
-        position_x = randint(0, GRID_WIDTH - 1) * GRID_SIZE
-        position_y = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
-        new_position = (position_x, position_y)
+        new_position = None
 
-        while new_position in forbidden_positions:
+        while new_position is None or new_position in forbidden_positions:
             position_x = randint(0, GRID_WIDTH - 1) * GRID_SIZE
             position_y = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
             new_position = (position_x, position_y)
@@ -116,7 +114,7 @@ class Snake(GameObject):
     и сбросом состояния при проигрыше.
     """
 
-    def __init__(self, calor = SNAKE_COLOR):
+    def __init__(self, color=SNAKE_COLOR):
         """Инициализирует начальное состояние змейки."""
         super().__init__(color)
         self.reset()
@@ -138,10 +136,8 @@ class Snake(GameObject):
         new_y = (position_y + GRID_SIZE * delta_y) % SCREEN_HEIGHT
         new_head_position = (new_x, new_y)
         self.positions.insert(0, new_head_position)
-        if len(self.positions) > self.length:
-            self.last = self.positions.pop()
-        else:
-            self.last = None
+        while len(self.positions) > self.length:
+            self.positions.pop()
 
     def update_direction(self):
         """Обновляет текущее направление движения на основе next_direction."""
@@ -151,7 +147,7 @@ class Snake(GameObject):
 
     def draw(self):
         """Отрисовывает все сегменты тела змейки и затирает след от хвоста."""
-        for position in self.positions[:-1]:
+        for position in self.positions:
             rect = (pygame.Rect(position, (GRID_SIZE, GRID_SIZE)))
             pygame.draw.rect(screen, self.body_color, rect)
             pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
@@ -217,6 +213,7 @@ def main():
         clock.tick(current_speed)
         handle_keys(snake)
         snake.update_direction()
+        screen.fill(BOARD_BACKGROUND_COLOR)
         snake.move()
 
         # 1. Проверка: змейка съела хорошее яблоко
@@ -228,6 +225,8 @@ def main():
         elif snake.get_head_position() == bad_apple.position:
             if snake.length > 1:
                 snake.length -= 1
+                if len(snake.positions) > 0:
+                    snake.last = snake.positions.pop()
                 bad_apple.randomize_position(snake.positions
                                              + [apple.position])
             else:

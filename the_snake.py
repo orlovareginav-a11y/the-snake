@@ -87,15 +87,16 @@ class Apple(GameObject):
         if forbidden_positions is None:
             forbidden_positions = []
 
-        while True:
+        position_x = randint(0, GRID_WIDTH - 1) * GRID_SIZE
+        position_y = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
+        new_position = (position_x, position_y)
+
+        while new_position in forbidden_positions:
             position_x = randint(0, GRID_WIDTH - 1) * GRID_SIZE
             position_y = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
             new_position = (position_x, position_y)
 
-            # Если позиция свободна, сохраняем её и выходим из цикла
-            if new_position not in forbidden_positions:
-                self.position = new_position
-                break
+        self.position = new_position
 
     def draw(self):
         """
@@ -115,10 +116,9 @@ class Snake(GameObject):
     и сбросом состояния при проигрыше.
     """
 
-    def __init__(self):
+    def __init__(self, calor = SNAKE_COLOR):
         """Инициализирует начальное состояние змейки."""
-        super().__init__()
-        self.body_color = SNAKE_COLOR
+        super().__init__(color)
         self.reset()
 
     def get_head_position(self):
@@ -231,7 +231,8 @@ def main():
                 bad_apple.randomize_position(snake.positions
                                              + [apple.position])
             else:
-                snake.quit()
+                pygame.quit()
+                raise SystemExit
 
         # 3. Проверка: змейка врезалась в себя
         elif snake.get_head_position() in snake.positions[1:]:
